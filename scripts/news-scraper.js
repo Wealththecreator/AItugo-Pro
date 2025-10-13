@@ -178,9 +178,13 @@ function parseRss(xml) {
 }
 
 const cliArgs = process.argv.slice(2);
-let limit = 25;
+let limit = Number.parseInt(process.env.LIMIT ?? '', 10) || 25;
 let outputFile = '';
-let outputFormat = 'json';
+let outputFormat = process.env.OUTPUT_FORMAT || 'json';
+let serveMode = false;
+let servePort = Number.parseInt(process.env.PORT ?? '', 10) || 8787;
+let serveHost = process.env.HOST || '0.0.0.0';
+let refreshMinutes = Number.parseInt(process.env.REFRESH_MINUTES ?? '', 10) || 30;
 
 for (const arg of cliArgs) {
   if (arg.startsWith('--limit=')) {
@@ -192,6 +196,23 @@ for (const arg of cliArgs) {
     outputFile = arg.split('=')[1] ?? '';
   } else if (arg.startsWith('--format=')) {
     outputFormat = arg.split('=')[1] ?? 'json';
+  } else if (arg === '--serve') {
+    serveMode = true;
+  } else if (arg.startsWith('--port=')) {
+    const parsed = Number.parseInt(arg.split('=')[1] ?? '', 10);
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      servePort = parsed;
+    }
+  } else if (arg.startsWith('--host=')) {
+    const host = arg.split('=')[1];
+    if (host) {
+      serveHost = host;
+    }
+  } else if (arg.startsWith('--refresh=')) {
+    const parsed = Number.parseInt(arg.split('=')[1] ?? '', 10);
+    if (!Number.isNaN(parsed) && parsed > 0) {
+      refreshMinutes = parsed;
+    }
   }
 }
 
@@ -348,7 +369,7 @@ async function fetchFeed(source) {
   }
 }
 
-async function scrape() {
+async function scrape(maxItems = limit) {
   const results = await Promise.all(SOURCES.map(fetchFeed));
   const flattened = results.flat();
   const seen = new Set();
@@ -369,12 +390,12 @@ async function scrape() {
   }
 
   const sorted = enriched.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-  const trimmed = sorted.slice(0, limit);
+  const trimmed = sorted.slice(0, maxItems);
 
   if (!trimmed.length) {
     const fallbackPath = new URL('./sample-ai-news.json', import.meta.url);
     const sample = JSON.parse(await readFile(fallbackPath, 'utf8'));
-    return sample.slice(0, limit);
+    return sample.slice(0, maxItems);
   }
 
   return trimmed;
@@ -435,32 +456,139 @@ function toTableRows(articles) {
   }));
 }
 
-async function main() {
-  const articles = await scrape();
+async function buildBriefing(maxItems = limit) {
+  const articles = await scrape(maxItems);
   const overview = buildOverview(articles);
+  return {
+    generatedAt: new Date().toISOString(),
+    sources: SOURCES.map((source) => source.name),
+    overview,
+    articles,
+  };
+}
+
+async function runCli() {
+  const payload = await buildBriefing(limit);
 
   if (outputFormat === 'table') {
-    console.table(toTableRows(articles));
-    console.log('\nOverview:', overview);
-  } else {
-    const payload = {
-      generatedAt: new Date().toISOString(),
-      sources: SOURCES.map((source) => source.name),
-      overview,
-      articles,
-    };
+    console.table(toTableRows(payload.articles));
+    console.log('\nOverview:', payload.overview);
+    return;
+  }
 
-    if (outputFile) {
-      await writeFile(outputFile, JSON.stringify(payload, null, 2), 'utf8');
-      console.log(`Saved actionable briefing to ${outputFile}`);
-    } else {
-      console.log(JSON.stringify(payload, null, 2));
-    }
+  if (outputFile) {
+    await writeFile(outputFile, JSON.stringify(payload, null, 2), 'utf8');
+    console.log(`Saved actionable briefing to ${outputFile}`);
+  } else {
+    console.log(JSON.stringify(payload, null, 2));
   }
 }
 
-main().catch((error) => {
-  console.error('Unexpected error while scraping news:', error);
+function sliceBriefing(payload, maxItems) {
+  if (!Number.isFinite(maxItems) || maxItems <= 0) {
+    return payload;
+  }
+
+  const articles = payload.articles.slice(0, maxItems);
+  return {
+    ...payload,
+    overview: buildOverview(articles),
+    articles,
+  };
+}
+
+async function startServer() {
+  const { createServer } = await import('node:http');
+
+  let cache = await buildBriefing(limit);
+  let lastRefreshError = null;
+
+  async function refreshCache() {
+    try {
+      const nextPayload = await buildBriefing(limit);
+      cache = nextPayload;
+      lastRefreshError = null;
+      console.log(
+        `Refreshed briefing @ ${new Date(nextPayload.generatedAt).toISOString()} with ${nextPayload.articles.length} stories.`,
+      );
+    } catch (error) {
+      lastRefreshError = error;
+      console.error('Failed to refresh briefing:', error);
+    }
+  }
+
+  const refreshInterval = setInterval(refreshCache, refreshMinutes * 60_000);
+  refreshInterval.unref?.();
+
+  const server = createServer(async (request, response) => {
+    const requestUrl = new URL(request.url ?? '/', `http://${request.headers.host ?? 'localhost'}`);
+
+    if (requestUrl.pathname === '/health') {
+      response.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+      response.end(
+        JSON.stringify({
+          status: 'ok',
+          lastGeneratedAt: cache.generatedAt,
+          articleCount: cache.articles.length,
+          refreshMinutes,
+          lastRefreshError: lastRefreshError ? String(lastRefreshError?.message ?? lastRefreshError) : null,
+        }),
+      );
+      return;
+    }
+
+    if (requestUrl.pathname === '/news') {
+      const requestedLimit = Number.parseInt(requestUrl.searchParams.get('limit') ?? '', 10);
+      const payload = sliceBriefing(cache, requestedLimit);
+      response.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+      response.end(JSON.stringify(payload, null, 2));
+      return;
+    }
+
+    if (requestUrl.pathname === '/' || requestUrl.pathname === '/status') {
+      response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+      response.end(`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>AI News Briefing</title>
+    <style>
+      body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem auto; max-width: 720px; line-height: 1.6; color: #0f172a; }
+      code { background: #f1f5f9; padding: 0.2rem 0.35rem; border-radius: 0.3rem; }
+      h1 { font-size: 1.875rem; margin-bottom: 1rem; }
+      p { margin-bottom: 1rem; }
+      ul { padding-left: 1.2rem; }
+    </style>
+  </head>
+  <body>
+    <h1>AI Opportunities Briefing</h1>
+    <p>The live API is running. Pull the actionable feed at <code>/news</code> or check <code>/health</code> for uptime.</p>
+    <p>Current cache was generated at <strong>${cache.generatedAt}</strong> with <strong>${cache.articles.length}</strong> opportunities.</p>
+    <p>Try the following endpoints:</p>
+    <ul>
+      <li><code>/news</code> – full JSON briefing using the configured limit (${limit}).</li>
+      <li><code>/news?limit=10</code> – trimmed to the first 10 stories.</li>
+      <li><code>/health</code> – refresh cadence and status.</li>
+    </ul>
+  </body>
+</html>`);
+      return;
+    }
+
+    response.writeHead(404, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+    response.end(JSON.stringify({ error: 'Not Found' }));
+  });
+
+  server.listen(servePort, serveHost, () => {
+    console.log(`AI news briefing live at http://${serveHost}:${servePort}`);
+    console.log(`Refreshing every ${refreshMinutes} minute(s).`);
+  });
+}
+
+const runner = serveMode ? startServer : runCli;
+
+runner().catch((error) => {
+  console.error('Unexpected error while running the news briefing:', error);
   process.exitCode = 1;
 });
 
