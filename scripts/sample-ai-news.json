@@ -1,0 +1,68 @@
+[
+  {
+    "source": "Sample Digest",
+    "title": "Runway launches real-time Gen-2 video editing workspace",
+    "url": "https://example.com/runway-gen2-workspace",
+    "publishedAt": "2025-01-14T09:00:00.000Z",
+    "summary": "Runway unveiled a real-time editing workspace for Gen-2 that lets creators mix live video with AI-generated sequences inside a collaborative timeline.",
+    "focus": "Creators",
+    "focusBreakdown": { "creatorsScore": 5, "entrepreneursScore": 2 },
+    "opportunityType": "Tools & Products",
+    "urgency": "Act today",
+    "opportunityScore": 7.4,
+    "recommendedActions": [
+      "Experiment with the featured tool in a pilot project.",
+      "Share a behind-the-scenes breakdown or tutorial for your audience."
+    ],
+    "metrics": {
+      "recencyHours": 6,
+      "keywordHits": ["ai", "workflow"],
+      "estimatedWordCount": 180
+    },
+    "excerpt": "Runway introduced a new real-time editing workspace for Gen-2 that lets video teams collaborate on AI-assisted sequences. Creators can mix captured footage with generated assets, adjust prompts on the fly, and publish straight to social channels."
+  },
+  {
+    "source": "Sample Digest",
+    "title": "Notion adds AI workspace analytics for solopreneurs",
+    "url": "https://example.com/notion-ai-analytics",
+    "publishedAt": "2025-01-13T16:30:00.000Z",
+    "summary": "Notion AI now offers workspace analytics that surface bottlenecks, automation opportunities, and content reuse suggestions tailored to small teams.",
+    "focus": "Entrepreneurs",
+    "focusBreakdown": { "creatorsScore": 1, "entrepreneursScore": 4 },
+    "opportunityType": "Tools & Products",
+    "urgency": "Plan this week",
+    "opportunityScore": 6.5,
+    "recommendedActions": [
+      "Evaluate partnership or integration opportunities with the tool.",
+      "Assess potential to streamline internal operations using this solution."
+    ],
+    "metrics": {
+      "recencyHours": 20,
+      "keywordHits": ["ai", "automation"],
+      "estimatedWordCount": 150
+    },
+    "excerpt": "Notion released AI workspace analytics that highlight projects that are slipping, templates that are underused, and automation suggestions based on repetitive updates. Solopreneurs can convert the insights into zap-ready automations."
+  },
+  {
+    "source": "Sample Digest",
+    "title": "AI education platform Maven partners with Adobe to teach multimodal storytelling",
+    "url": "https://example.com/maven-adobe-storytelling",
+    "publishedAt": "2025-01-12T12:15:00.000Z",
+    "summary": "Maven and Adobe launched a cohort-based course that helps creators blend video, audio, and generative assets into a single storytelling pipeline.",
+    "focus": "Creators & Entrepreneurs",
+    "focusBreakdown": { "creatorsScore": 3, "entrepreneursScore": 3 },
+    "opportunityType": "Education & Playbooks",
+    "urgency": "Monitor",
+    "opportunityScore": 5.9,
+    "recommendedActions": [
+      "Transform the playbook into a live session or workshop.",
+      "Roll the framework into team training or SOP updates."
+    ],
+    "metrics": {
+      "recencyHours": 40,
+      "keywordHits": ["ai"],
+      "estimatedWordCount": 210
+    },
+    "excerpt": "Maven partnered with Adobe to run a 4-week cohort on multimodal storytelling. Participants learn how to ideate with Firefly, draft scripts with AI, and batch content for YouTube, podcasts, and newsletters from a single prompt library."
+  }
+]

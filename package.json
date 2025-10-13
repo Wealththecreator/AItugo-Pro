@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "scrape:news": "node scripts/news-scraper.js --format=table",
+    "scrape:serve": "node scripts/news-scraper.js --serve"
   },
   "dependencies": {
     "react": "^19.1.1",
