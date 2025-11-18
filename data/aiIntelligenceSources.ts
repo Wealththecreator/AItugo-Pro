@@ -12,6 +12,7 @@ export type PlatformType =
   | 'Social Feed'
   | 'Podcast'
   | 'Database'
+  | 'Directory'
   | 'YouTube'
   | 'Market Report';
 
@@ -503,6 +504,7 @@ export const platformFilters: PlatformType[] = [
   'Social Feed',
   'Podcast',
   'Database',
+  'Directory',
   'YouTube',
   'Market Report',
 ];
