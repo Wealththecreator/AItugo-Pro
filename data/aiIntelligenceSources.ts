@@ -144,24 +144,25 @@ export const intelligenceSources: IntelligenceSource[] = [
     callToAction: 'Mine the weekly megathreads and turn the “Top 5 workflows” into a weekend tutorial series.',
   },
   {
-    id: 'futurepedia',
-    name: 'Futurepedia',
-    url: 'https://www.futurepedia.io',
+    id: 'aitugo-tools-directory',
+    name: 'AITugo Tools Directory',
+    url: 'https://www.aitugo.com/tools',
     categories: ['AI Tools in Action', 'News & Trends'],
-    platformType: 'Database',
+    platformType: 'Directory',
     description:
-      'Largest curated directory of AI tools with launch velocity data, pricing breakdowns, and user ratings.',
-    audienceFocus: 'Tool reviewers, affiliate marketers, and educators building curriculum around AI stacks.',
+      'Official AITugo-curated index of AI tools with launch velocity data, monetisation hooks, and community sentiment overlays.',
+    audienceFocus:
+      'Creators, reviewers, and educators building curriculum or offers around high-performing AI stacks.',
     keySignals: {
-      reach: '9,000+ tools tracked',
+      reach: '1,200+ tools mapped across creator use cases',
       cadence: 'Updated daily',
-      formats: ['Database', 'Comparison tables', 'Launch alerts'],
+      formats: ['Directory', 'Comparison tables', 'Launch alerts'],
     },
     dataHighlights: {
       trendingTopics: ['Agent platforms', 'AI video editors', 'Automation copilots'],
       monetizationAngles: [
-        'Bundle their comparison data into “starter stacks” with affiliate links',
-        'Build cohort-based workshops around high-demand categories',
+        'Bundle our comparison data into “starter stacks” with affiliate links',
+        'Build cohort-based workshops around the highest-demand categories',
       ],
       creatorTakeaways: [
         'Track velocity scores to pick tools worth reviewing first',
@@ -169,13 +170,14 @@ export const intelligenceSources: IntelligenceSource[] = [
       ],
     },
     proofPoints: [
-      'Shows trending growth and review count so you can prioritise content on momentum tools',
+      'AITugo signals layer trending growth and review count so you can prioritise momentum tools',
       'Exports datasets you can remix into interactive Notion hubs',
     ],
     signalStrength: 'Dominant',
     credibilityScore: 82,
     impactScore: 87,
-    callToAction: 'Publish a “tool stack for X niche” carousel using their high-velocity category each week.',
+    callToAction:
+      'Publish a “tool stack for X niche” carousel using the highest-velocity categories surfaced each week.',
   },
   {
     id: 'latentspace',
