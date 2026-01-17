@@ -123,3 +123,35 @@ export const VideoCameraIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) 
     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9A2.25 2.25 0 004.5 18.75z" />
   </svg>
 );
+
+export const FilterIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.362.322 7.757.915a1.125 1.125 0 01.87 1.096v.013a3 3 0 01-.879 2.121l-4.53 4.53a3 3 0 00-.879 2.121V18a1.5 1.5 0 01-2.29 1.264l-2.25-1.5A1.5 1.5 0 018 16.5v-2.704a3 3 0 00-.879-2.121l-4.53-4.53A3 3 0 011.712 5.024v-.013a1.125 1.125 0 01.87-1.096A29.91 29.91 0 0112 3z" />
+  </svg>
+);
+
+export const LinkIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.687l1.425-1.425a3.75 3.75 0 115.303 5.303l-3.182 3.182a3.75 3.75 0 01-5.303 0 3.75 3.75 0 01-.8-4.117m-2.823 4.117l-1.425 1.425a3.75 3.75 0 11-5.303-5.303l3.182-3.182a3.75 3.75 0 015.303 0 3.75 3.75 0 01.8 4.117" />
+  </svg>
+);
+
+export const LightningBoltIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M13 3l-8 10h6l-1 8 8-10h-6l1-8z" />
+  </svg>
+);
+
+export const TrendingUpIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 17l6-6 4 4 8-8" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8v6h-6" />
+  </svg>
+);
+
+export const GlobeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 12h18M12 3c2.485 2.79 3.75 6.03 3.75 9s-1.265 6.21-3.75 9c-2.485-2.79-3.75-6.03-3.75-9s1.265-6.21 3.75-9z" />
+  </svg>
+);
